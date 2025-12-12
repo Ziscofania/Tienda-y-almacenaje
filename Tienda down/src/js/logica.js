@@ -108,6 +108,46 @@ function renderCatalog(){
   });
 }
 
+// Assets: cargar manifest de velas y renderizar galería lateral
+async function loadAssetsVelas(){
+  const container = $('assets-velas');
+  if (!container) return;
+  // intentamos cargar manifest desde public/assets/velas/manifest.json
+  try{
+    const res = await fetch('public/assets/velas/manifest.json');
+    if (!res.ok) throw new Error('manifest no encontrado');
+    const m = await res.json();
+    const items = m.velas || [];
+    container.innerHTML = '';
+    items.forEach(name => {
+      const img = document.createElement('img');
+      img.src = `public/assets/velas/${name}`;
+      img.style.width='100%'; img.style.cursor='pointer'; img.style.borderRadius='6px'; img.style.objectFit='cover';
+      img.addEventListener('click', ()=>{
+        // al hacer click añadimos la ruta al input de imagen del form (como una imagen seleccionada)
+        // si el usuario está editando, se añadirá al producto en edición; si no, se añadirá al producto nuevo en el form
+        const saveBtn = $('btn-guardar-producto');
+        if (saveBtn && saveBtn.dataset.editing) {
+          const pid = saveBtn.dataset.editing;
+          const prod = state.products.find(p=>p.id===pid);
+          if (prod) { prod.images = prod.images || []; prod.images.push(img.src); saveState(); renderAll(); alert('Imagen añadida al producto en edición'); }
+        } else {
+          // temporal: guardamos la ruta en un hidden input 'nuevo-img-url' y la mostramos como previsualización
+          let h = $('nuevo-img-url');
+          if (!h){ h = document.createElement('input'); h.type='hidden'; h.id='nuevo-img-url'; document.body.appendChild(h); }
+          h.value = img.src;
+          // mostrar previsualización al lado del formulario
+          let prev = $('nuevo-img-preview');
+          if (!prev){ prev = document.createElement('div'); prev.id='nuevo-img-preview'; prev.style.marginTop='6px'; const form = document.querySelector('#panel-nuevo .form'); if (form) form.appendChild(prev); }
+          prev.innerHTML = `<div style="display:flex;gap:8px;align-items:center;"><img src="${img.src}" style="width:60px;height:48px;object-fit:cover;border-radius:6px"/><div style="font-size:12px;color:var(--text-muted)">Seleccionada desde assets</div></div>`;
+        }
+      });
+      const wrap = document.createElement('div'); wrap.style.width='100%'; wrap.style.height='80px'; wrap.style.overflow='hidden'; wrap.appendChild(img);
+      container.appendChild(wrap);
+    });
+  }catch(e){ console.warn('Error cargando assets velas', e); container.innerHTML = '<p class="help">No se pudo cargar catálogo de assets.</p>'; }
+}
+
 function renderInventory(){
   const tbody = $('tabla-inventario'); if (!tbody) return;
   if (!state.products.length) { tbody.innerHTML = '<tr><td colspan="4" class="help">No hay productos registrados.</td></tr>'; return; }
@@ -135,6 +175,14 @@ async function addProductFromForm(){
   const files = $('nuevo-img') ? Array.from($('nuevo-img').files) : [];
   const images = [];
   for (let f of files){ try{ images.push(await fileToDataURL(f)); } catch(e){ console.warn(e); } }
+  // si el usuario seleccionó una imagen desde assets, habrá un input hidden con la ruta
+  const assetUrlInput = $('nuevo-img-url');
+  if (assetUrlInput && assetUrlInput.value) {
+    images.unshift(assetUrlInput.value);
+    // limpiar el hidden preview
+    const prev = $('nuevo-img-preview'); if (prev) prev.innerHTML = '';
+    assetUrlInput.value = '';
+  }
 
   const p = { id: uid('p_'), name, price, category, qty, images, createdAt: Date.now() };
   state.products.push(p); state.order.push(p.id); saveState(); clearNewProductForm(); renderAll();
@@ -193,6 +241,7 @@ async function handleSaveButton(e){ e.preventDefault(); const saveBtn = $('btn-g
   else { await addProductFromForm(); }
 }
 
+
 function exportAllCSV(){
   // productos
   const rowsP = [ ['id','name','category','price','qty','images'] ]; state.products.forEach(p=> rowsP.push([p.id,p.name,p.category,p.price,p.qty,p.images.length])); exportCSVFile('productos.csv', rowsP);
@@ -212,6 +261,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const btnRegVenta = $('btn-registrar-venta'); if (btnRegVenta) btnRegVenta.addEventListener('click', (e)=>{ e.preventDefault(); registerSale(); });
   const btnExport = $('btn-exportar'); if (btnExport) btnExport.addEventListener('click', (e)=>{ e.preventDefault(); exportAllCSV(); });
   renderAll();
+
+  // cargar assets (velas)
+  loadAssetsVelas();
 
   // Tab switching: conectar botones con paneles (btn.dataset.tab -> panel-id = 'panel-' + tab)
   const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));

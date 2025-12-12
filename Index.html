@@ -25,7 +25,16 @@
     <section class="panel active" id="panel-catalogo">
       <h2>Catálogo de productos</h2>
       <p>Los estudiantes pueden reorganizar los productos y ver su imagen.</p>
-      <div id="catalogo-list" class="grid"></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1 1 640px;">
+          <div id="catalogo-list" class="grid"></div>
+        </div>
+        <aside style="width:260px;">
+          <h4 style="margin:6px 0">Assets - Velas</h4>
+          <p class="help" style="font-size:12px">Selecciona imágenes del catálogo de velas para asignarlas a un producto.</p>
+          <div id="assets-velas" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;"></div>
+        </aside>
+      </div>
     </section>
 
     <!-- INVENTARIO -->
