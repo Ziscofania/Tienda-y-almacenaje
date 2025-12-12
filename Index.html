@@ -2,321 +2,98 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Formulación de Proyectos</title>
+  <title>Fundación Aprender - Control de Tienda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/Tienda down//src/css/styles.css" />
+  <link rel="stylesheet" href="Tienda down/src/css/styles.css" />
 </head>
 <body>
   <div class="app-shell">
-    <div class="card-shell">
-      <header>
-        <div>
-          <h1>Fundación Aprender</h1>
-          <p>Versión web simplificada del Excel para monitorero control y registro de la tienda</p>
-        </div>
-        <div class="header-right">
-          <div class="badge">
-            <span class="dot"></span> Cliente: usuario de la tienda
-          </div>
-          <a class="btn-download" href="formulacion_taller.xlsx" download>
-            Descargar Excel original
-          </a>
-        </div>
-      </header>
+    <header class="main-header">
+      <h1>Fundación Aprender</h1>
+      <p>Sistema web para el control de ventas e inventario</p>
+  <button id="btn-exportar" class="btn">Exportar a Excel</button>
+    </header>
 
-      <!-- Tabs -->
-      <div class="tab-bar">
-        <button class="tab-btn active" data-tab="1"><span class="num">1</span> Velas</button>
-        <button class="tab-btn" data-tab="2"><span class="num">2</span> Bisuteria</button>
-        <button class="tab-btn" data-tab="3"><span class="num">3</span> Bufandas</button>
-        <button class="tab-btn" data-tab="4"><span class="num">4</span> Bolsos</button>
-        <button class="tab-btn" data-tab="5"><span class="num">5</span> Reloj navideño</button>
-        <button class="tab-btn" data-tab="6"><span class="num">6</span> Luces </button>
-        <button class="tab-btn" data-tab="7"><span class="num">7</span> cajas</button>
+    <nav class="tab-bar">
+      <button class="tab-btn active" data-tab="catalogo">Catálogo</button>
+      <button class="tab-btn" data-tab="inventario">Inventario</button>
+      <button class="tab-btn" data-tab="ventas">Ventas</button>
+      <button class="tab-btn" data-tab="nuevo">Registrar producto</button>
+    </nav>
+
+    <!-- CATÁLOGO -->
+    <section class="panel active" id="panel-catalogo">
+      <h2>Catálogo de productos</h2>
+      <p>Los estudiantes pueden reorganizar los productos y ver su imagen.</p>
+      <div id="catalogo-list" class="grid"></div>
+    </section>
+
+    <!-- INVENTARIO -->
+    <section class="panel" id="panel-inventario">
+      <h2>Inventario</h2>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-inventario"></tbody>
+      </table>
+    </section>
+
+    <!-- VENTAS -->
+    <section class="panel" id="panel-ventas">
+      <h2>Registro de ventas</h2>
+      <div class="form">
+        <label>Producto</label>
+        <select id="venta-producto"></select>
+
+        <label>Cantidad</label>
+        <input id="venta-cantidad" type="number" min="1">
+
+        <button id="btn-registrar-venta" class="btn">Registrar venta</button>
       </div>
 
-      <!-- Panel 1: Parámetros -->
-      <section class="panel active" id="panel-1">
-        <h2>1. Parámetros generales del proyecto</h2>
-        <p class="help">
-          Define el horizonte de evaluación y los parámetros macro. El <strong>capital de trabajo inicial</strong> se ingresa en pesos (ej. 140000000 = $140 millones).
-        </p>
+      <h3>Historial</h3>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-ventas"></tbody>
+      </table>
+    </section>
 
-        <div class="grid-2">
-          <div>
-            <label for="p-anios">Horizonte del proyecto (años)</label>
-            <input type="number" id="p-anios" min="1" value="5">
-          </div>
-          <div>
-            <label for="p-inflacion">% Inflación anual esperada</label>
-            <input type="number" id="p-inflacion" step="0.1" value="8">
-          </div>
-          <div>
-            <label for="p-crec-ventas">% Crecimiento anual de ventas</label>
-            <input type="number" id="p-crec-ventas" step="0.1" value="10">
-          </div>
-          <div>
-            <label for="p-impuesto">% Impuesto a la utilidad</label>
-            <input type="number" id="p-impuesto" step="0.1" value="35">
-          </div>
-          <div>
-            <label for="p-van">% Tasa de descuento (VAN)</label>
-            <input type="number" id="p-van" step="0.1" value="12">
-          </div>
-          <div>
-            <label for="p-indir">% Costos indirectos sobre MP</label>
-            <input type="number" id="p-indir" step="0.1" value="15">
-          </div>
-          <div>
-            <label for="p-fijos">Otros costos fijos anuales (peso)</label>
-            <input type="number" id="p-fijos" value="30000000" placeholder="30000000">
-          </div>
-          <div>
-            <label for="p-ct">Capital de trabajo inicial (peso)</label>
-            <input type="number" id="p-ct" value="140000000" placeholder="Ej: 140000000">
-          </div>
-        </div>
+    <!-- NUEVO PRODUCTO -->
+    <section class="panel" id="panel-nuevo">
+      <h2>Registrar nuevo producto</h2>
+      <div class="form">
+        <label>Nombre</label>
+        <input id="nuevo-nombre" type="text" />
 
-        <div class="btn-nav">
-          <button class="btn secondary small" disabled>◀ Anterior</button>
-          <button class="btn small" data-next="2">Siguiente ▶</button>
-        </div>
-      </section>
+        <label>Precio</label>
+        <input id="nuevo-precio" type="number" min="1" />
 
-      <!-- Panel 2: Personal -->
-      <section class="panel" id="panel-2">
-        <h2>2. Personal</h2>
-        <p class="help">
-          Registra los cargos por área. Puedes decidir si incluyes auxilio de transporte, prestaciones y seguridad social en el costo anual.
-        </p>
+    <label>Categoría</label>
+    <input id="nuevo-categoria" type="text" placeholder="p.ej. velas, papelería" />
 
-        <div class="grid-2">
-          <div>
-            <label>Área</label>
-            <select id="per-area">
-              <option value="Administrativa">Administrativa</option>
-              <option value="Ventas">Área de Ventas</option>
-              <option value="Producción">Área de Producción</option>
-              <option value="Otra">Otra</option>
-            </select>
-          </div>
-          <div>
-            <label>Cargo</label>
-            <input type="text" id="per-cargo" placeholder="Ej: Gerente general">
-          </div>
-          <div>
-            <label>Cantidad de personas</label>
-            <input type="number" id="per-cant" min="1" value="1">
-          </div>
-          <div>
-            <label>Sueldo mensual por persona (peso)</label>
-            <input type="number" id="per-sueldo" value="2000000">
-          </div>
-        </div>
+    <label>Cantidad en inventario</label>
+    <input id="nuevo-cantidad" type="number" min="0" value="0" />
 
-        <label class="mt-8">Componentes a incluir en el costo del personal</label>
-        <div class="toggle-row">
-          <label class="toggle-card active" id="toggle-aux">
-            <input type="checkbox" id="chk-aux" checked>
-            Auxilio de transporte (si aplica)
-          </label>
-          <label class="toggle-card active" id="toggle-prest">
-            <input type="checkbox" id="chk-prest" checked>
-            Prestaciones (primas, cesantías, int. cesantías, vacaciones)
-          </label>
-          <label class="toggle-card active" id="toggle-ss">
-            <input type="checkbox" id="chk-ss" checked>
-            Aportes seguridad social (empleador)
-          </label>
-        </div>
+        <label>Imagen</label>
+    <input id="nuevo-img" type="file" accept="image/*" multiple />
 
-        <button class="btn small mt-8" id="btn-agregar-persona">➕ Agregar cargo</button>
-
-        <div id="tabla-personal-wrapper"></div>
-
-        <div class="btn-nav">
-          <button class="btn secondary small" data-prev="1">◀ Anterior</button>
-          <button class="btn small" data-next="3">Siguiente ▶</button>
-        </div>
-      </section>
-
-      <!-- Panel 3: Producto y MP -->
-      <section class="panel" id="panel-3">
-        <h2>3. Producto y materia prima</h2>
-        <p class="help">
-          Este módulo asume <strong>un solo producto</strong> y varios ingredientes (materias primas) para su “receta”.
-        </p>
-
-        <h3>Producto</h3>
-        <div class="grid-2">
-          <div>
-            <label>Nombre del producto</label>
-            <input type="text" id="prod-nombre" placeholder="Ej: Pan artesanal">
-          </div>
-          <div>
-            <label>Precio de venta unitario (peso)</label>
-            <input type="number" id="prod-precio" value="3000">
-          </div>
-          <div>
-            <label>Unidades a producir / vender Año 1</label>
-            <input type="number" id="prod-unidades" value="100000">
-          </div>
-        </div>
-
-        <h3 class="mt-12">Receta: ingredientes del producto</h3>
-        <div class="grid-2">
-          <div>
-            <label>Ingrediente</label>
-            <input type="text" id="mp-desc" placeholder="Ej: Harina de trigo">
-          </div>
-          <div>
-            <label>Cantidad por unidad de producto</label>
-            <input type="number" id="mp-cant-unit" step="0.0001" value="0.25">
-          </div>
-          <div>
-            <label>Unidad</label>
-            <select id="mp-unidad">
-              <option value="kg">kg</option>
-              <option value="lb">lb</option>
-              <option value="g">g</option>
-              <option value="unidad">unidad</option>
-              <option value="litro">litro</option>
-            </select>
-          </div>
-          <div>
-            <label>Costo unitario del insumo (peso por unidad seleccionada)</label>
-            <input type="number" id="mp-costo-unit" value="3500">
-          </div>
-        </div>
-        <button class="btn small mt-8" id="btn-agregar-mp">➕ Agregar ingrediente</button>
-
-        <div id="tabla-mp-wrapper"></div>
-
-        <div class="btn-nav">
-          <button class="btn secondary small" data-prev="2">◀ Anterior</button>
-          <button class="btn small" data-next="4">Siguiente ▶</button>
-        </div>
-      </section>
-
-      <!-- Panel 4: Activos -->
-      <section class="panel" id="panel-4">
-        <h2>4. Activos fijos</h2>
-        <p class="help">Registra la inversión en activos, su vida útil y valor residual para la depreciación anual.</p>
-
-        <div class="grid-2">
-          <div>
-            <label>Descripción</label>
-            <input type="text" id="act-desc" placeholder="Ej: Horno industrial">
-          </div>
-          <div>
-            <label>Costo (peso)</label>
-            <input type="number" id="act-costo" value="50000000">
-          </div>
-          <div>
-            <label>Vida útil (años)</label>
-            <input type="number" id="act-vida" value="10">
-          </div>
-          <div>
-            <label>Valor residual (peso)</label>
-            <input type="number" id="act-residual" value="5000000">
-          </div>
-        </div>
-        <button class="btn small mt-8" id="btn-agregar-activo">➕ Agregar activo</button>
-
-        <div id="tabla-activos-wrapper"></div>
-
-        <div class="btn-nav">
-          <button class="btn secondary small" data-prev="3">◀ Anterior</button>
-          <button class="btn small" data-next="5">Siguiente ▶</button>
-        </div>
-      </section>
-
-      <!-- Panel 5: Amortización -->
-      <section class="panel" id="panel-5">
-        <h2>5. Amortización del crédito</h2>
-        <p class="help">
-          Define el crédito que financia parte de la inversión. Se calcula una tabla de amortización con cuota fija (sistema francés).
-        </p>
-
-        <div class="grid-2">
-          <div>
-            <label>Monto del crédito (peso)</label>
-            <input type="number" id="am-monto" value="80000000">
-          </div>
-          <div>
-            <label>Tasa efectiva anual (%)</label>
-            <input type="number" id="am-tasa" value="16" step="0.1">
-          </div>
-          <div>
-            <label>Plazo (años)</label>
-            <input type="number" id="am-anios" value="5">
-          </div>
-          <div>
-            <label>Pagos por año</label>
-            <input type="number" id="am-pagos" value="1">
-          </div>
-        </div>
-
-        <button class="btn small mt-8" id="btn-calcular-amort">📑 Calcular amortización</button>
-
-        <div id="tabla-amort-wrapper"></div>
-
-        <div class="btn-nav">
-          <button class="btn secondary small" data-prev="4">◀ Anterior</button>
-          <button class="btn small" data-next="6">Siguiente ▶</button>
-        </div>
-      </section>
-
-      <!-- Panel 6: Ventas -->
-      <section class="panel" id="panel-6">
-        <h2>6. Ventas proyectadas</h2>
-        <p class="help">
-          Las ventas se calculan como <strong>precio × unidades</strong> del producto para el Año 1 y se aplican los parámetros de crecimiento anual definidos en la pestaña 1.
-        </p>
-
-        <div id="tabla-ventas-wrapper"></div>
-
-        <div class="btn-nav">
-          <button class="btn secondary small" data-prev="5">◀ Anterior</button>
-          <button class="btn small" data-next="7">Siguiente ▶</button>
-        </div>
-      </section>
-
-      <!-- Panel 7: Resultados -->
-      <section class="panel" id="panel-7">
-        <div class="flex-between">
-          <h2>7. Estado de resultados, flujo de caja y evaluación</h2>
-          <button class="btn small" id="btn-recalcular">Calcular todo ▶</button>
-        </div>
-
-        <div class="kpi-row mt-8">
-          <div class="kpi">
-            <h4>VAN (Valor Actual Neto)</h4>
-            <p id="kpi-van">$0</p>
-          </div>
-          <div class="kpi">
-            <h4>TIR (Tasa Interna de Retorno estimada)</h4>
-            <p id="kpi-tir">0%</p>
-          </div>
-          <div class="kpi muted small">
-            <h4>Payback (años)</h4>
-            <p id="kpi-payback">-</p>
-          </div>
-        </div>
-
-        <h3>Estado de resultados proyectado</h3>
-        <div id="tabla-resultados-wrapper"></div>
-
-        <h3 class="mt-12">Flujo de caja del proyecto</h3>
-        <div id="tabla-flujos-wrapper"></div>
-
-        <div class="btn-nav">
-          <button class="btn secondary small" data-prev="6">◀ Anterior</button>
-          <button class="btn secondary small" disabled>Fin</button>
-        </div>
-      </section>
-    </div>
+        <button id="btn-guardar-producto" class="btn">Guardar producto</button>
+      </div>
+    </section>
   </div>
-  <script src="/Tienda down//src/js/logica.js"></script>
+
+  <script src="Tienda down/src/js/logica.js"></script>
 </body>
 </html>
