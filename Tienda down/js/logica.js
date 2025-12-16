@@ -11,7 +11,7 @@ let seleccionEnvase = null;
 let seleccionEsencia = null;
 
 const envases = ["pescera", "whisky", "cilindro"];
-const esencias = ["canela", "sandalo", "mora"];
+const esencias = ["chicle", "vainilla", "Manzana verde", "Sandalo", "lavanda", "Durazno", "canela", "limon", "citrus punch", "maracuya"];
 
 /************************************************
  * UTILIDADES
