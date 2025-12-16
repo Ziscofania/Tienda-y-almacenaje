@@ -4,105 +4,97 @@
   <meta charset="UTF-8" />
   <title>Fundación Aprender - Control de Tienda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/Tienda down/css/styles.css" />
+  <link rel="stylesheet" href="./Tienda down/css/styles.css" />
 </head>
+
 <body>
-  <div class="app-shell">
-    <header class="main-header">
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <header class="main-header">
+    <div>
       <h1>Fundación Aprender</h1>
       <p>Sistema web para el control de ventas e inventario</p>
-  <button id="btn-exportar" class="btn">Exportar a Excel</button>
-    </header>
+    </div>
+    <button id="btn-exportar" class="btn">Exportar a Excel</button>
+  </header>
 
-    <nav class="tab-bar">
-      <button class="tab-btn active" data-tab="catalogo">Catálogo</button>
-      <button class="tab-btn" data-tab="inventario">Inventario</button>
-      <button class="tab-btn" data-tab="ventas">Ventas</button>
-      <button class="tab-btn" data-tab="nuevo">Registrar producto</button>
-    </nav>
+  <!-- NAVEGACIÓN -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="catalogo">Catálogo</button>
+    <button class="tab-btn" data-tab="inventario">Inventario</button>
+    <button class="tab-btn" data-tab="nuevo">Registrar producto</button>
+  </nav>
 
-    <!-- CATÁLOGO -->
-    <section class="panel active" id="panel-catalogo">
-      <h2>Catálogo de productos</h2>
-      <p>Los estudiantes pueden reorganizar los productos y ver su imagen.</p>
-      <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-        <div style="flex:1 1 640px;">
-          <div id="catalogo-list" class="grid"></div>
-        </div>
-        <aside style="width:260px;">
-          <h4 style="margin:6px 0">Assets - Velas</h4>
-          <p class="help" style="font-size:12px">Selecciona imágenes del catálogo de velas para asignarlas a un producto.</p>
-          <div id="assets-velas" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;"></div>
-        </aside>
-      </div>
-    </section>
+  <!-- CATÁLOGO -->
+  <section class="panel active" id="panel-catalogo">
+    <h2>Catálogo de productos</h2>
+    <p class="help">Explora los productos disponibles por categoría.</p>
 
-    <!-- INVENTARIO -->
-    <section class="panel" id="panel-inventario">
-      <h2>Inventario</h2>
-      <table class="tabla">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-inventario"></tbody>
-      </table>
-    </section>
+    <label for="filtro-categoria">Filtrar por categoría</label>
+    <select id="filtro-categoria"></select>
 
-    <!-- VENTAS -->
-    <section class="panel" id="panel-ventas">
-      <h2>Registro de ventas</h2>
-      <div class="form">
-        <label>Producto</label>
-        <select id="venta-producto"></select>
+    <div id="catalogo-list" class="grid" style="margin-top:16px;"></div>
+  </section>
 
-        <label>Cantidad</label>
-        <input id="venta-cantidad" type="number" min="1">
+  <!-- INVENTARIO -->
+  <section class="panel" id="panel-inventario">
+    <h2>Inventario</h2>
+    <p class="help">Control de existencias y valor total.</p>
 
-        <button id="btn-registrar-venta" class="btn">Registrar venta</button>
-      </div>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-inventario"></tbody>
+    </table>
+  </section>
 
-      <h3>Historial</h3>
-      <table class="tabla">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Subtotal</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-ventas"></tbody>
-      </table>
-    </section>
+  <!-- REGISTRAR PRODUCTO -->
+  <section class="panel" id="panel-nuevo">
+    <h2>Registrar nuevo producto</h2>
+    <p class="help">
+      Completa la información del producto.  
+      Si la categoría es <strong>velas</strong>, podrás configurar envase y esencia.
+    </p>
 
-    <!-- NUEVO PRODUCTO -->
-    <section class="panel" id="panel-nuevo">
-      <h2>Registrar nuevo producto</h2>
-      <div class="form">
-        <label>Nombre</label>
-        <input id="nuevo-nombre" type="text" />
+    <div class="form">
 
-        <label>Precio</label>
-        <input id="nuevo-precio" type="number" min="1" />
+      <label for="nuevo-nombre">Nombre del producto</label>
+      <input id="nuevo-nombre" type="text" placeholder="Ej: Vela aromática canela" />
 
-    <label>Categoría</label>
-    <input id="nuevo-categoria" type="text" placeholder="p.ej. velas, papelería" />
+      <label for="nuevo-categoria">Categoría</label>
+      <input id="nuevo-categoria" type="text" placeholder="velas, maderas, bisutería" />
 
-    <label>Cantidad en inventario</label>
-    <input id="nuevo-cantidad" type="number" min="0" value="0" />
+      <label for="nuevo-precio">Precio</label>
+      <input id="nuevo-precio" type="number" min="1" />
 
-        <label>Imagen</label>
-    <input id="nuevo-img" type="file" accept="image/*" multiple />
+      <label for="nuevo-cantidad">Cantidad inicial</label>
+      <input id="nuevo-cantidad" type="number" min="0" value="0" />
 
-        <button id="btn-guardar-producto" class="btn">Guardar producto</button>
-      </div>
-    </section>
-  </div>
+      <!-- CONFIGURACIÓN EXCLUSIVA PARA VELAS -->
+      <fieldset id="vela-config" style="display:none">
+        <legend>Configuración de vela</legend>
 
-  <script src="/Tienda down/js/logica.js"></script>
+        <label>Selecciona el envase</label>
+        <div id="envases" class="grid"></div>
+
+        <label>Selecciona la esencia</label>
+        <div id="esencias" class="grid"></div>
+      </fieldset>
+
+      <button id="btn-guardar-producto" class="btn">Guardar producto</button>
+
+    </div>
+  </section>
+
+</div>
+
+<script src="./Tienda down/js/logica.js"></script>
 </body>
 </html>
