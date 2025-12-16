@@ -79,13 +79,17 @@ $("btn-guardar-producto").onclick = () => {
     return;
   }
 
-  let producto = {
+  const producto = {
     id: generarId(),
     nombre,
     categoria,
     precio,
     cantidad,
-    imagen: null
+    stockMinimo: 5,
+    activo: true,
+    imagen: null,
+    creadoEn: new Date().toISOString(),
+    actualizadoEn: new Date().toISOString()
   };
 
   if (categoria === "velas") {
@@ -104,7 +108,7 @@ $("btn-guardar-producto").onclick = () => {
   limpiarFormulario();
   renderTodo();
 
-  alert("Producto registrado");
+  alert("Producto registrado correctamente");
 };
 
 /************************************************
@@ -144,21 +148,37 @@ function renderCatalogo() {
 }
 
 /************************************************
- * INVENTARIO
+ * INVENTARIO POR CATEGORÍA
  ************************************************/
 function renderInventario() {
   const tbody = $("tabla-inventario");
   tbody.innerHTML = "";
 
+  const grupos = {};
+
   productos.forEach(p => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${p.nombre}</td>
-        <td>${p.cantidad}</td>
-        <td>$${p.precio}</td>
-        <td>$${p.precio * p.cantidad}</td>
-      </tr>
+    if (!grupos[p.categoria]) grupos[p.categoria] = [];
+    grupos[p.categoria].push(p);
+  });
+
+  Object.keys(grupos).forEach(cat => {
+    const header = document.createElement("tr");
+    header.innerHTML = `
+      <td colspan="4"><strong>${cat.toUpperCase()}</strong></td>
     `;
+    tbody.appendChild(header);
+
+    grupos[cat].forEach(p => {
+      const alerta = p.cantidad <= p.stockMinimo ? "⚠️" : "";
+      tbody.innerHTML += `
+        <tr>
+          <td>${p.nombre} ${alerta}</td>
+          <td>${p.cantidad}</td>
+          <td>$${p.precio}</td>
+          <td>$${p.precio * p.cantidad}</td>
+        </tr>
+      `;
+    });
   });
 }
 
@@ -201,6 +221,35 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
     $("panel-" + btn.dataset.tab).classList.add("active");
   };
 });
+
+/************************************************
+ * EXPORTAR INVENTARIO (EXCEL / CSV)
+ ************************************************/
+function exportarInventarioExcel() {
+  const filas = [
+    ["ID", "Producto", "Categoría", "Cantidad", "Precio", "Total", "Stock mínimo"]
+  ];
+
+  productos.forEach(p => {
+    filas.push([
+      p.id,
+      p.nombre,
+      p.categoria,
+      p.cantidad,
+      p.precio,
+      p.cantidad * p.precio,
+      p.stockMinimo
+    ]);
+  });
+
+  const csv = filas.map(f => f.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `inventario_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+}
 
 /************************************************
  * RENDER GENERAL

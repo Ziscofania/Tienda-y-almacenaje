@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <title>Fundación Aprender - Control de Tienda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./Tienda down/css/styles.css" />
+  <link rel="stylesheet" href="Tienda down/css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -16,31 +17,110 @@
       <h1>Fundación Aprender</h1>
       <p>Sistema web para el control de ventas e inventario</p>
     </div>
-    <button id="btn-exportar" class="btn">Exportar a Excel</button>
+
+    <button id="btn-exportar" class="btn">
+      Exportar inventario semanal
+    </button>
   </header>
 
   <!-- NAVEGACIÓN -->
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="catalogo">Catálogo</button>
-    <button class="tab-btn" data-tab="inventario">Inventario</button>
+    <button class="tab-btn" data-tab="bodega">Bodega</button>
+    <button class="tab-btn" data-tab="semanal">Inventario semanal</button>
     <button class="tab-btn" data-tab="nuevo">Registrar producto</button>
   </nav>
 
   <!-- CATÁLOGO -->
   <section class="panel active" id="panel-catalogo">
-    <h2>Catálogo de productos</h2>
-    <p class="help">Explora los productos disponibles por categoría.</p>
+    <h2>Catálogo</h2>
+    <p class="help">Vista pública de los productos disponibles.</p>
 
-    <label for="filtro-categoria">Filtrar por categoría</label>
+    <label>Filtrar por categoría</label>
     <select id="filtro-categoria"></select>
 
     <div id="catalogo-list" class="grid" style="margin-top:16px;"></div>
   </section>
 
-  <!-- INVENTARIO -->
-  <section class="panel" id="panel-inventario">
-    <h2>Inventario</h2>
-    <p class="help">Control de existencias y valor total.</p>
+  <!-- BODEGA -->
+  <section class="panel" id="panel-bodega">
+    <h2>Inventario de bodega</h2>
+    <p class="help">
+      Control total del stock general.  
+      Desde aquí se ajustan precios, cantidades y se envía producto al inventario semanal.
+    </p>
+
+  <div id="bodega-filters" style="margin:10px 0; display:flex; gap:8px; flex-wrap:wrap;"></div>
+
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <button id="btn-reset-seed" class="btn secondary">Restaurar bodega de ejemplo</button>
+      <div style="flex:1"></div>
+    </div>
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Opción</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Valor total</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-bodega">
+        <!-- Filas de ejemplo estáticas para visualización inmediata -->
+        <tr>
+          <td>Vela Aromática 120g</td>
+          <td style="font-size:13px;color:var(--text-muted)">Cítrico</td>
+          <td>40</td>
+          <td>$15.000</td>
+          <td>$600.000</td>
+          <td>
+            <button class="btn small">Enviar a semana</button>
+            <button class="btn small secondary">Editar</button>
+            <button class="btn small">Eliminar</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Arete Dorado</td>
+          <td style="font-size:13px;color:var(--text-muted)">Material: Perla</td>
+          <td>30</td>
+          <td>$9.000</td>
+          <td>$270.000</td>
+          <td>
+            <button class="btn small">Enviar a semana</button>
+            <button class="btn small secondary">Editar</button>
+            <button class="btn small">Eliminar</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Tabla decorativa</td>
+          <td style="font-size:13px;color:var(--text-muted)">Tipo: Roble</td>
+          <td>12</td>
+          <td>$35.000</td>
+          <td>$420.000</td>
+          <td>
+            <button class="btn small">Enviar a semana</button>
+            <button class="btn small secondary">Editar</button>
+            <button class="btn small">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="help" style="margin-top:10px;">
+      💡 Usa “Enviar a semana” para mover stock al inventario semanal.
+    </p>
+  </section>
+
+  <!-- INVENTARIO SEMANAL -->
+  <section class="panel" id="panel-semanal">
+    <h2>Inventario semanal</h2>
+    <p class="help">
+      Productos disponibles para venta durante la semana.
+      Cada venta descuenta automáticamente.
+    </p>
 
     <table class="tabla">
       <thead>
@@ -49,52 +129,66 @@
           <th>Cantidad</th>
           <th>Precio</th>
           <th>Total</th>
+          <th>Venta</th>
         </tr>
       </thead>
-      <tbody id="tabla-inventario"></tbody>
+      <tbody id="tabla-semanal">
+        <!-- JS renderiza -->
+      </tbody>
     </table>
+
+    <div style="display:flex;gap:8px;margin-top:12px;align-items:center;">
+      <button id="btn-export-semana" class="btn">Exportar semana (Excel)</button>
+      <button id="btn-import-semana" class="btn secondary">Importar semana (.csv)</button>
+      <input id="input-import-semana" type="file" accept="text/csv" style="display:none" />
+    </div>
+
+    <h3 style="margin-top:16px">Gráfica semanal</h3>
+    <canvas id="week-chart" height="160"></canvas>
+
+    <p class="help" style="margin-top:10px;">
+      ⚠️ Este inventario se exporta al final de la semana.
+    </p>
   </section>
 
   <!-- REGISTRAR PRODUCTO -->
   <section class="panel" id="panel-nuevo">
     <h2>Registrar nuevo producto</h2>
-    <p class="help">
-      Completa la información del producto.  
-      Si la categoría es <strong>velas</strong>, podrás configurar envase y esencia.
-    </p>
 
     <div class="form">
 
-      <label for="nuevo-nombre">Nombre del producto</label>
-      <input id="nuevo-nombre" type="text" placeholder="Ej: Vela aromática canela" />
+      <label>Nombre del producto</label>
+      <input id="nuevo-nombre" type="text" />
 
-      <label for="nuevo-categoria">Categoría</label>
+      <label>Categoría</label>
       <input id="nuevo-categoria" type="text" placeholder="velas, maderas, bisutería" />
 
-      <label for="nuevo-precio">Precio</label>
+      <label>Precio</label>
       <input id="nuevo-precio" type="number" min="1" />
 
-      <label for="nuevo-cantidad">Cantidad inicial</label>
+      <label>Cantidad inicial (bodega)</label>
       <input id="nuevo-cantidad" type="number" min="0" value="0" />
 
-      <!-- CONFIGURACIÓN EXCLUSIVA PARA VELAS -->
+      <!-- SOLO VELAS -->
       <fieldset id="vela-config" style="display:none">
         <legend>Configuración de vela</legend>
 
-        <label>Selecciona el envase</label>
+        <label>Envase</label>
         <div id="envases" class="grid"></div>
 
-        <label>Selecciona la esencia</label>
+        <label>Esencia</label>
         <div id="esencias" class="grid"></div>
       </fieldset>
 
-      <button id="btn-guardar-producto" class="btn">Guardar producto</button>
+      <button id="btn-guardar-producto" class="btn">
+        Guardar producto
+      </button>
 
     </div>
   </section>
 
 </div>
 
-<script src="./Tienda down/js/logica.js"></script>
+<script src="Tienda down/src/js/logica.js"></script>
 </body>
 </html>
