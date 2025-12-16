@@ -27,15 +27,82 @@
   </nav>
 
   <!-- CATÁLOGO -->
-  <section class="panel active" id="panel-catalogo">
-    <h2>Catálogo de productos</h2>
-    <p class="help">Explora los productos disponibles por categoría.</p>
+<section class="catalogo">
 
-    <label for="filtro-categoria">Filtrar por categoría</label>
-    <select id="filtro-categoria"></select>
+  <!-- ================= VELAS ================= -->
+  <div class="producto-catalogo" data-producto="vela">
+    <h2>Velas</h2>
 
-    <div id="catalogo-list" class="grid" style="margin-top:16px;"></div>
-  </section>
+    <div class="grid-catalogo">
+
+      <div class="card-envase"
+           data-producto="vela"
+           data-envase="envase de etc"
+           data-precio="18000">
+        <img src="imagen" alt="envase de etc">
+        <h3>Vaso de vidrio</h3>
+        <p>$18.000</p>
+      </div>
+
+      <div class="card-envase"
+           data-producto="vela"
+           data-envase="envase de etc"
+           data-precio="22000">
+        <img src="imagen" alt="envase de etc">
+        <h3>Lata metálica</h3>
+        <p>$22.000</p>
+      </div>
+
+      <div class="card-envase"
+           data-producto="vela"
+           data-envase="envase de etc"
+           data-precio="30000">
+        <img src="imagen" alt="envase de etc">
+        <h3>Envase premium</h3>
+        <p>$30.000</p>
+      </div>
+
+    </div>
+
+    <div class="aromas">
+      <h3>Aromas disponibles</h3>
+      <div class="aromas-filtrados grid" data-producto="vela"></div>
+    </div>
+  </div>
+
+  <!-- ================= DIFUSORES ================= -->
+  <div class="producto-catalogo" data-producto="difusor">
+    <h2>Difusores</h2>
+
+    <div class="grid-catalogo">
+
+      <div class="card-envase"
+           data-producto="difusor"
+           data-envase="frasco_pequeno"
+           data-precio="25000">
+        <img src="./Tienda down/img/difusor_pequeno.png" alt="Difusor pequeño">
+        <h3>Difusor pequeño</h3>
+        <p>$25.000</p>
+      </div>
+
+      <div class="card-envase"
+           data-producto="difusor"
+           data-envase="frasco_grande"
+           data-precio="40000">
+        <img src="./Tienda down/img/difusor_grande.png" alt="Difusor grande">
+        <h3>Difusor grande</h3>
+        <p>$40.000</p>
+      </div>
+
+    </div>
+
+    <div class="aromas">
+      <h3>Aromas disponibles</h3>
+      <div class="aromas-filtrados grid" data-producto="difusor"></div>
+    </div>
+  </div>
+
+</section>
 
   <!-- INVENTARIO -->
   <section class="panel" id="panel-inventario">

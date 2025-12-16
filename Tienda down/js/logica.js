@@ -31,7 +31,7 @@ function generarId() {
 }
 
 /************************************************
- * UI VELAS
+ * UI VELAS (FORMULARIO)
  ************************************************/
 function renderAssetsVelas() {
   const env = $("envases");
@@ -74,8 +74,8 @@ $("btn-guardar-producto").onclick = () => {
   const precio = Number($("nuevo-precio").value);
   const cantidad = Number($("nuevo-cantidad").value);
 
-  if (!nombre || precio <= 0) {
-    alert("Nombre y precio son obligatorios");
+  if (!nombre || precio <= 0 || cantidad <= 0) {
+    alert("Datos inválidos");
     return;
   }
 
@@ -103,8 +103,6 @@ $("btn-guardar-producto").onclick = () => {
   guardar();
   limpiarFormulario();
   renderTodo();
-
-  alert("Producto registrado");
 };
 
 /************************************************
@@ -121,7 +119,7 @@ function limpiarFormulario() {
 }
 
 /************************************************
- * CATÁLOGO
+ * CATÁLOGO GENERAL (LISTA SIMPLE)
  ************************************************/
 function renderCatalogo() {
   const cont = $("catalogo-list");
@@ -189,6 +187,57 @@ $("nuevo-categoria").oninput = () => {
     $("vela-config").style.display = "none";
   }
 };
+
+/************************************************
+ * NUEVO CATÁLOGO VISUAL (ENVASE → AROMAS)
+ ************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.querySelectorAll(".card-envase").forEach(card => {
+    card.addEventListener("click", () => {
+
+      const producto = card.dataset.producto;
+      const envase = card.dataset.envase;
+      const precio = Number(card.dataset.precio);
+
+      mostrarAromasCatalogo(producto, envase, precio);
+    });
+  });
+
+});
+
+/************************************************
+ * FILTRO DE AROMAS POR INVENTARIO
+ ************************************************/
+function mostrarAromasCatalogo(producto, envase, precio) {
+
+  const contenedor = document.querySelector(
+    `.aromas-filtrados[data-producto="${producto}"]`
+  );
+
+  if (!contenedor) return;
+
+  contenedor.innerHTML = "";
+
+  const resultados = productos.filter(p =>
+    p.categoria === producto + "s" && // velas, difusores, etc
+    p.envase === envase &&
+    p.precio === precio &&
+    p.cantidad > 0
+  );
+
+  if (resultados.length === 0) {
+    contenedor.innerHTML = "<p>No hay aromas disponibles</p>";
+    return;
+  }
+
+  resultados.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "aroma-item";
+    div.textContent = `${p.esencia} (${p.cantidad})`;
+    contenedor.appendChild(div);
+  });
+}
 
 /************************************************
  * TABS
